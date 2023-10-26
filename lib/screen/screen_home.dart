@@ -69,17 +69,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.pop(context);
                           },
                         ),
+                        //개인정보 변경
+                        ListTile(
+                          title: Text('개인정보 변경',textAlign: TextAlign.center),
+                          onTap: (){
+                            // 드로워를 닫음
+                            Navigator.pop(context);
+                          },
+                        ),
                       ],
                     ),
                 ),
                 Padding(
                     padding: EdgeInsets.only(bottom: width*0.04),
-                    child: ListTile(
-                      title: Text('로그아웃',textAlign: TextAlign.center,),
-                      onTap: (){
+                    child:Row(
+                      children: [
+                        Flexible(
+                            child: ListTile(
+                              title: Text('로그아웃',textAlign: TextAlign.center,),
+                              onTap: (){
 
-                      },
-                    ),
+                              },
+                            ),
+                        ),
+                        Flexible(
+                          child: ListTile(
+                            title: Text('회원탈퇴',textAlign: TextAlign.center,),
+                            onTap: (){
+
+                            },
+                          ),
+                        ),
+                      ],
+                    )
                 )
               ],
             )
@@ -134,9 +156,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius: BorderRadius.circular(20),
                                         ),
                                         margin: EdgeInsets. symmetric (vertical: 10, horizontal: 40),
-                                        child: ListTile(
-                                          minVerticalPadding: 40,
-                                          title: Text('Item $index',textAlign: TextAlign.center,),
+                                        child: Container(
+                                          width: width*0.8,
+                                          height: height*0.12,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Text('$index 가게',
+                                                    style: TextStyle(
+                                                        fontSize: 20
+                                                    ),
+                                                  ),
+                                                  Text('0000시 성북구 화랑도 11길 26',
+                                                    style: TextStyle(
+                                                        fontSize: 15
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                              Text('$index km',
+                                                style: TextStyle(
+                                                    fontSize: 20
+                                                ),
+                                              ),
+                                            ],
+                                          )
                                         ),
                                       );
                                     },
