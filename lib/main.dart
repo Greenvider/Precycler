@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screen/screen_home.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'widget/widget_loginOrHome.dart';
 
 void main() {
   //앱이 시작하는 동시에 스플래쉬 화면을 나타나게 하여 HomeScreen이 로드될때까지 표시한다.
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
     double height = screenSize.height;
+
     return MaterialApp(
       //디버깅 모드에서 표시되는 배너를 가리기
       debugShowCheckedModeBanner: false,
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
       title: 'Precycler',
 
       //home은 HomeScreen 위젯으로 지정
-      home:HomeScreen(width: width,height: height,),
+      home: LoginOrHome(width:width,height:height)
     );
   }
 }
