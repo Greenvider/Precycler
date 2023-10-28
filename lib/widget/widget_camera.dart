@@ -55,9 +55,8 @@ class _CameraWidgetState extends State<CameraWidget>
 
     _cameraController =
         CameraController(
-            backCamera,
-            ResolutionPreset.max, // 가장 높은 해상도의 기능을 쓸 수 있도록 합니다.
-
+          backCamera,
+          ResolutionPreset.max, // 가장 높은 해상도의 기능을 쓸 수 있도록 합니다
         );
     _cameraController.initialize()
         .then(
@@ -89,35 +88,35 @@ class _CameraWidgetState extends State<CameraWidget>
       // 카메라 초기화되고 UI를 표시할 때 카메라 미리보기 및 기타 UI를 표시
       return _cameraInitialized
           ? Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(height: height * 0.05),
-          Text(
-            '000님의 보유 포인트는 190입니다',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Container(height: height * 0.08),
-          Container(
-            height: width * 0.8,
-            width: width * 0.8,
-            child: _cameraPreview(),
-          ),
-          Container(height: height * 0.05),
-          IconButton(
-            onPressed: () async {
-              onSutterPressed(context);
-            },
-            icon: Icon(Icons.camera_alt),
-          ),
-        ],
-      )
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(height: height * 0.05),
+              Text(
+                '000님의 보유 포인트는 190입니다',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Container(height: height * 0.08),
+              Container(
+                height: width * 0.8,
+                width: width * 0.8,
+                child: _cameraPreview(),
+              ),
+              Container(height: height * 0.05),
+              IconButton(
+                onPressed: () async {
+                  onSutterPressed(context);
+                },
+                icon: Icon(Icons.camera_alt),
+              ),
+            ],
+          )
           : Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.white,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
         ),
       );
     }
@@ -147,6 +146,7 @@ class _CameraWidgetState extends State<CameraWidget>
     setState(() {
       _isLoadingChangePointScreen = true;
     });
+    _cameraController.setFlashMode(FlashMode.off);
 
     final XFile image = await _cameraController.takePicture();
     ImageProperties properties = await FlutterNativeImage.getImageProperties(image.path);

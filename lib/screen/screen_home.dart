@@ -38,7 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         //포인트 이용 내역
                         ListTile(
-                          title: Text('포인트 이용 내역',textAlign: TextAlign.center,),
+                          title: Text(
+                            '포인트 이용 내역',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20
+                            ),
+                          ),
                           onTap: (){
                             // 네이게이터 팝을 통해 드로워를 닫는다.
                             Navigator.pop(context);
@@ -46,7 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         //개인정보 변경
                         ListTile(
-                          title: Text('개인정보 변경',textAlign: TextAlign.center),
+                          title: Text(
+                            '개인정보 변경',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20
+                            ),
+                          ),
                           onTap: (){
                             // 드로워를 닫음
                             Navigator.pop(context);
@@ -54,7 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         //버그 문의
                         ListTile(
-                          title: Text('버그 문의',textAlign: TextAlign.center),
+                          title: Text(
+                            '버그 문의',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20
+                            ),
+                          ),
                           onTap: (){
                             // 드로워를 닫음
                             Navigator.pop(context);
@@ -62,7 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         //도움말
                         ListTile(
-                          title: Text('도움말',textAlign: TextAlign.center,),
+                          title: Text(
+                            '도움말',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20
+                            ),
+                          ),
                           onTap: (){
                             // 네이게이터 팝을 통해 드로워를 닫는다.
                             Navigator.pop(context);
@@ -70,7 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         //정책
                         ListTile(
-                          title: Text('정책',textAlign: TextAlign.center),
+                          title: Text(
+                            '정책',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20
+                            ),
+                          ),
                           onTap: (){
                             // 드로워를 닫음
                             Navigator.pop(context);
