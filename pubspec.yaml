@@ -38,6 +38,12 @@ dependencies:
   flutter_svg:
   flutter_native_splash:
   flutter_keyboard_visibility:
+  image_picker:
+  qr_code_scanner:
+  camera:
+  path_provider:
+  path:
+  flutter_native_image:
 
 dev_dependencies:
   flutter_test:

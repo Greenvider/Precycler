@@ -37,7 +37,7 @@ class _LoginOrHomeState extends State<LoginOrHome> {
     //만약 로그인이 되었다면
     else{
       //Home위젯 보이기
-      child = HomeScreen(width: width,height: height,);
+      child = HomeScreen();
     }
   }
 
@@ -45,6 +45,7 @@ class _LoginOrHomeState extends State<LoginOrHome> {
   Widget build(BuildContext context) {
     //상태표지줄과 네비게이션 바와 겹치지 않는 안전한 영역을 반환
     return SafeArea(
+        //자식은 앞에서 지정한 로그인 화면 또는 홈화면으로 지정
         child: child,
     );
   }
