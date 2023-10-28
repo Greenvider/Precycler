@@ -44,6 +44,7 @@ dependencies:
   path_provider:
   path:
   flutter_native_image:
+  fluttertoast:
 
 dev_dependencies:
   flutter_test:

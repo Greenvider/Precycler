@@ -2,12 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
-	    <key>NSMicrophoneUsageDescription</key>
-	    <string>Pick ur favorite place video</string>
-	    <key>NSCameraUsageDescription</key>
-        <string>Take ur favorite place image</string>
-        <key>NSPhotoLibraryUsageDescription</key>
-        <string>Pick ur favorite place image</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Pick ur favorite place video</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Take ur favorite place image</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Pick ur favorite place image</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>

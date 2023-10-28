@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'screen_home.dart';
-import 'screen_register.dart';
+import 'screen_login.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   double? width;
   double? height;
 
-  LoginScreen({super.key,this.width,this.height});
+  RegisterScreen({super.key,this.width,this.height});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  //로그인 창에서 입력받을 아이디
+class _RegisterScreenState extends State<RegisterScreen> {
+  late String name;
+
+  //회원가입 창에서 입력받을 아이디
   late String id;
 
-  //로그인 창에서 입력받을 비밀번호
+  //회원가입 창에서 입력받을 비밀번호
   late String password;
+
+  late String _password;
 
   //비밀번호표시의 현재 아이콘
   IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +48,51 @@ class _LoginScreenState extends State<LoginScreen> {
                 //간격
                 SizedBox(
                   height: widget.height! * 0.1,
+                ),
+
+                // 이름 입력 필드
+                Container(
+                  width: widget.width! * 0.8,
+                  height: widget.height! * 0.07,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(widget.width! * 0.03),
+                      border: Border.all(width: 1)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.short_text_outlined),
+                      SizedBox(
+                        width: widget.width! * 0.6,
+                        height: widget.height! * 0.068,
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              name = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                              hintText: '이름을 입력해주세요',
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              filled: false,
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none
+                              )
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: widget.width! * 0.0583,
+                      ),
+                    ],
+                  ),
+                ),
+
+                //간격
+                SizedBox(
+                  height: widget.height! * 0.02,
                 ),
 
                 // 아이디 입력 필드
@@ -92,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 //비밀번호 입력 필드
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.height! * 0.05),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: Container(
                     width: widget.width! * 0.8,
                     height: widget.height! * 0.07,
@@ -149,10 +199,74 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                //로그인 버튼
+                //간격
+                SizedBox(
+                  height: widget.height! * 0.02,
+                ),
+
+                //비밀번호 확인 입력 필드
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.height! * 0.05),
+                  child: Container(
+                    width: widget.width! * 0.8,
+                    height: widget.height! * 0.07,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            widget.width! * 0.03),
+                        border: Border.all(width: 1)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.key),
+                        SizedBox(
+                          width: widget.width! * 0.6,
+                          height: widget.height! * 0.068,
+                          child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                _password = value;
+                              });
+                            },
+                            obscureText: (_showPwdCurrenIcon == Icons.remove_red_eye)?true:false,
+                            decoration: InputDecoration(
+                                hintText: '비밀번호를 다시 입력해주세요',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                                filled: false,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none
+                                )
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(maxWidth: 48),
+                          splashRadius: 20,
+                          iconSize: 25,
+                          onPressed: () {
+                            setState(() {
+                              if (_showPwdCurrenIcon == Icons.remove_red_eye_outlined) {
+                                _showPwdCurrenIcon = Icons.remove_red_eye;
+                              } else {
+                                _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+                              }
+                            });
+                          },
+                          icon: Icon(_showPwdCurrenIcon),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+
+                //회원가입 버튼
                 Padding(
                   //로그인 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.width! * 0.01),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.width! * 0.3),
 
                   //버튼의 크기를 정하는 박스
                   child: SizedBox(
@@ -168,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pop(context);
 
                           //홈 페이지로 전환
-                          Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreen()));
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen(width: widget.width,height: widget.height,)));
                         },
 
                         //버튼 스타일
@@ -184,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
 
                         //버튼 내용
-                        child: Text('로그인',
+                        child: Text('회원가입',
                           style: TextStyle(
                               color: Colors.black
                           ),
@@ -192,18 +306,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.height!*0.27),
-                  child: TextButton(
-                    onPressed: (){
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => RegisterScreen(width: widget.width,height: widget.height,))
-                      );
-                    },
-                    child: Text('회원가입',style: TextStyle(color: Colors.black),),
-
-                  ),
-                )
               ],
             ),
           ),

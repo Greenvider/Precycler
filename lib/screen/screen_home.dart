@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:precycler/widget/widget_camera.dart';
+import 'package:precycler/screen/Drawer/screen_drawer_pointHistory.dart';
+import 'package:precycler/screen/Drawer/screen_drawer_editInformation.dart';
+import 'package:precycler/screen/Drawer/screen_drawer_errorInquiry.dart';
+import 'package:precycler/screen/Drawer/screen_drawer_help.dart';
+import 'package:precycler/screen/Drawer/screen_drawer_policy.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -22,11 +27,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           //배경 색은 하얀색으로
           backgroundColor: Colors.white,
+
           //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
           resizeToAvoidBottomInset: false,
+
+          //appBar
           appBar: AppBar(
+            //appBar 배경화면 한얀색
             backgroundColor: Colors.white,
+
+            //appBar 그림자 없애기
             elevation: 0,
+
+            //
             iconTheme: IconThemeData(color: Colors.black),
           ),
           drawer: Drawer(
@@ -46,8 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: (){
-                            // 네이게이터 팝을 통해 드로워를 닫는다.
-                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PointHistoryDrawer(),
+                              ),
+                            );
                           },
                         ),
                         //개인정보 변경
@@ -60,8 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: (){
-                            // 드로워를 닫음
-                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => EditInformationDrawer(),
+                              ),
+                            );
                           },
                         ),
                         //버그 문의
@@ -74,8 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: (){
-                            // 드로워를 닫음
-                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ErrorInquiryDrawer(),
+                              ),
+                            );
                           },
                         ),
                         //도움말
@@ -88,8 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: (){
-                            // 네이게이터 팝을 통해 드로워를 닫는다.
-                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => HelpDrawer(),
+                              ),
+                            );
                           },
                         ),
                         //정책
@@ -102,8 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onTap: (){
-                            // 드로워를 닫음
-                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PolicyDrawer(),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -143,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
               DraggableScrollableSheet(
                 initialChildSize: 0.15, // 시작할 때 하단에서 보일 높이 (0.0에서 1.0 사이)
                 minChildSize: 0.15, // 최소 높이 (0.0에서 1.0 사이)
-                maxChildSize: 0.96, // 최대 높이 (0.0에서 1.0 사이)
+                maxChildSize: 1, // 최대 높이 (0.0에서 1.0 사이)
                 expand: true, // 위로 슬라이드하여 확장할 수 있는지 여부
                 builder: (context, scrollController) {
                   return Container(
@@ -152,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: scrollController,
                       children: [
                         Container(
-                          height: height*0.843,
+                          height: height*0.888,
                           decoration: BoxDecoration(
                               border: Border.all(width: 1),
                               borderRadius: BorderRadius.only(

@@ -3,7 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'dart:math';
 import 'package:precycler/screen/screen_changePoint.dart';
-import 'dart:io';
+import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class CameraWidget extends StatefulWidget {
   const CameraWidget({super.key});
@@ -154,9 +155,14 @@ class _CameraWidgetState extends State<CameraWidget>
     int offSetX = (properties.width! - cropSize) ~/2;
     int offSetY = (properties.height! - cropSize) ~/2;
     var imageFile = await FlutterNativeImage.cropImage(image.path, offSetX, offSetY, cropSize, cropSize);
+    List<int> imageBytes = imageFile.readAsBytesSync();
+    String base64Image = base64Encode(imageBytes);
+
+
+
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChangePointScreen(IncDec: "Dec"),
+        builder: (context) => ChangePointScreen(),
       ),
     );
     setState(() {
