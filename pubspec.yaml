@@ -45,6 +45,8 @@ dependencies:
   path:
   flutter_native_image:
   fluttertoast:
+  geolocator:
+  geocoding:
 
 dev_dependencies:
   flutter_test:

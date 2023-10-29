@@ -5,6 +5,7 @@ import 'package:precycler/screen/Drawer/screen_drawer_editInformation.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_errorInquiry.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_help.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_policy.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  double latitude = 0;
+  double longitude = 0;
+  String address = '';
+
   @override
   Widget build(BuildContext context) {
     //미디어 쿼리로 width와 height을 지정하여 상대적인 수치 사용
@@ -27,6 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //위에서 정한 DraggableScrollableSheet의 크기에 따라서 서버로부터 data를 받아올지 말지 결정
     bool getData = false;
+
+    void getLocationData() async {
+      Location location = Location();
+      await location.getCurrentLocation();
+      longitude = location.longitude;
+      latitude = location.latitude;
+    }
+
 
     //상태표지줄과 네비게이션 바와 겹치지 않는 안전한 영역을 반환
     return SafeArea(
@@ -204,8 +218,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     //서버로부터 정보를 가져올지 지정
                     getData = (sheetHeight <= minheight)?false:true;
 
-                    //로그 출력
-                    print("hi"+sheetHeight.toString() +"         "+maxheight.toString()+"       "+minheight.toString() +"            "+getData.toString());
+                    //만약 정보를 가져온다면 위도 경도 가져오기
+                    if(getData){
+                      List<String> Adr = [];
+                      bool loop = true;
+
+                      getLocationData();
+                      print(longitude.toString()+"  /  "+latitude.toString());
+                    }
 
                     //리스트뷰 반환
                     return ListView(
@@ -302,5 +322,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
     );
+  }
+}
+
+
+class Location {
+  double latitude = 0;
+  double longitude = 0;
+
+  Future<void> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    // print(permission);
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      latitude = position.latitude;
+      longitude = position.longitude;
+    } catch (e) {
+      print(e);
+    }
   }
 }

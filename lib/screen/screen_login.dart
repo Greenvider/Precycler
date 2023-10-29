@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Scaffold(
           //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
           resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.black,
 
           //body는 Center
           body: Center(
@@ -38,8 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 //Precycler
                 Text('Precycler',
                   style: TextStyle(
-                    fontSize: width * 0.1,
+                    fontSize: width * 0.15,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white
                   ),
                 ),
 
@@ -54,12 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: height * 0.07,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(width * 0.03),
-                      border: Border.all(width: 1)
+                      border: Border.all(width: 1,color: Colors.white),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.account_circle),
+                      Icon(Icons.account_circle,color: Colors.white,),
                       SizedBox(
                         width: width * 0.6,
                         height: height * 0.068,
@@ -69,15 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               id = value;
                             });
                           },
+                          style: TextStyle(color:Colors.white),
+                          cursorColor: Colors.white,
                           decoration: InputDecoration(
                               hintText: '아이디를 입력해주세요',
                               hintStyle: TextStyle(
-                                color: Colors.grey,
+                                color: Colors.white,
                               ),
                               filled: false,
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              )
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
                       ),
@@ -102,12 +109,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                             width * 0.03),
-                        border: Border.all(width: 1)
+                        border: Border.all(width: 1,color: Colors.white)
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.key),
+                        Icon(Icons.key,color: Colors.white,),
                         SizedBox(
                           width: width * 0.6,
                           height: height * 0.068,
@@ -117,15 +124,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 password = value;
                               });
                             },
+                            style: TextStyle(color:Colors.white),
+                            cursorColor: Colors.white,
                             obscureText: (showPwdCurrenIcon == Icons.remove_red_eye)?true:false,
                             decoration: InputDecoration(
                                 hintText: '비밀번호를 입력해주세요',
                                 hintStyle: TextStyle(
-                                  color: Colors.grey,
+                                  color: Colors.white,
                                 ),
                                 filled: false,
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide.none
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none
                                 )
                             ),
                           ),
@@ -144,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                             });
                           },
-                          icon: Icon(showPwdCurrenIcon),
+                          icon: Icon(showPwdCurrenIcon,color: Colors.white,),
                         ),
 
                       ],
@@ -176,19 +188,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         //버튼 스타일
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.black,
                             side: BorderSide(
-                              color: Color(0xFF595959),
+                              color: Colors.white,
                             ),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(height * 0.02)
+                                borderRadius: BorderRadius.circular(height * 0.02),
                             )
                         ),
 
                         //버튼 내용
                         child: Text('로그인',
                           style: TextStyle(
-                              color: Colors.black
+                              color: Colors.white
                           ),
                         ),
                     ),
@@ -204,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(builder: (context) => RegisterScreen())
                       );
                     },
-                    child: Text('회원가입',style: TextStyle(color: Colors.black),),
+                    child: Text('회원가입',style: TextStyle(color: Colors.white),),
 
                   ),
                 )
