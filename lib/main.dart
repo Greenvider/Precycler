@@ -11,6 +11,7 @@ void main()async{
   //전체화면
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: [SystemUiOverlay.bottom]);
 
+  //화면 세로 고정
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       //제목을 Precycler로
       title: 'Precycler',
 
-      //home은 HomeScreen 위젯으로 지정
+      //home은 로그인 여부에 따른 위젯표시를 해줄 위젯호출
       home: LoginOrHome(width:width,height:height)
     );
   }

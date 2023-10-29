@@ -8,6 +8,9 @@ PODS:
     - Flutter
   - flutter_native_splash (0.0.1):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - image_picker_ios (0.0.1):
     - Flutter
   - MTBBarcodeScanner (5.0.11)
@@ -17,6 +20,7 @@ PODS:
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
+  - Toast (4.0.0)
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
@@ -24,6 +28,7 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
@@ -31,6 +36,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - MTBBarcodeScanner
+    - Toast
 
 EXTERNAL SOURCES:
   camera_avfoundation:
@@ -43,6 +49,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_native_image/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
@@ -56,10 +64,12 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
+  fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
 

@@ -8,6 +8,7 @@ class ErrorInquiryDrawer extends StatefulWidget {
 }
 
 class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
+  //문의 내용
   String inquiry = "";
 
   @override
@@ -36,24 +37,31 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
             ),
           ),
           centerTitle: true,
-          //
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              //간격
               SizedBox(
                 height: height*0.1,
               ),
+
+              //입력 필드
               SizedBox(
                 width: width * 0.8,
                 child: TextField(
+                  //값이 변하면
                   onChanged: (value) {
                     setState(() {
+                      //변수에 저장
                       inquiry = value;
                     });
                   },
+                  maxLength: 500,
+
+                  //꾸미기
                   decoration: InputDecoration(
                       hintText: '문의 내용을 설명해주세요',
                       hintStyle: TextStyle(
@@ -67,15 +75,21 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                           borderSide: BorderSide(width: 1)
                       )
                   ),
+
+                  //최대 최소 길이
                   minLines: 13,
                   maxLines: 13,
                 ),
               ),
+
+              //간격
               SizedBox(
                 height: height*0.03,
               ),
+
+              //문의하기 버튼
               Padding(
-                //로그인 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
+                //문의하기 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
                 padding: EdgeInsets.fromLTRB(0, 0, 0, width * 0.3),
 
                 //버튼의 크기를 정하는 박스
@@ -86,7 +100,7 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                   child: ElevatedButton(
                     //버튼 입력시 실행 정보
                     onPressed: () {
-                      //로그인 로직 동작
+                      //문의하기 로직 동작
 
                       Navigator.pop(context);
                     },

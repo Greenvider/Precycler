@@ -4,10 +4,11 @@ import 'package:precycler/screen/screen_login.dart';
 import 'package:precycler/screen/screen_home.dart';
 
 class LoginOrHome extends StatefulWidget {
+  //main.dart로부터 width, height 값을 받아오기
   double? width;
   double? height;
-
   LoginOrHome({super.key,this.width,this.height});
+
   @override
   State<LoginOrHome> createState() => _LoginOrHomeState();
 
@@ -32,7 +33,7 @@ class _LoginOrHomeState extends State<LoginOrHome> {
     //만약 현재 로그인 되지 않았다면
     if(!loginState){
       //로그인 스크린을 띄우기
-      child = LoginScreen(width: width, height: height);
+      child = LoginScreen();
     }
     //만약 로그인이 되었다면
     else{

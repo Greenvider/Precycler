@@ -8,6 +8,9 @@
 		<string>Take ur favorite place image</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Pick ur favorite place image</string>
+		<string></string>
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true/>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
@@ -30,10 +33,20 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSCameraUsageDescription</key>
+		<string>Take ur favorite place image</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Pick ur favorite place video</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Pick ur favorite place image</string>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
+		<key>UIStatusBarHidden</key>
+		<false/>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
@@ -48,12 +61,6 @@
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false/>
-		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true/>
-		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true/>
-		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>
 </plist>

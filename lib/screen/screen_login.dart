@@ -3,11 +3,6 @@ import 'screen_home.dart';
 import 'screen_register.dart';
 
 class LoginScreen extends StatefulWidget {
-  double? width;
-  double? height;
-
-  LoginScreen({super.key,this.width,this.height});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -24,33 +19,41 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //미디어 쿼리로 width와 height을 지정하여 상대적인 수치 사용
+    Size screenSize = MediaQuery.of(context).size;
+    double width = screenSize.width;
+    double height = screenSize.height;
+
     return SafeArea(
         child: Scaffold(
           //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
           resizeToAvoidBottomInset: false,
+
+          //body는 Center
           body: Center(
+            //세로 정렬
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 //Precycler
                 Text('Precycler',
                   style: TextStyle(
-                    fontSize: widget.width! * 0.1,
+                    fontSize: width * 0.1,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
                 //간격
                 SizedBox(
-                  height: widget.height! * 0.1,
+                  height: height * 0.1,
                 ),
 
                 // 아이디 입력 필드
                 Container(
-                  width: widget.width! * 0.8,
-                  height: widget.height! * 0.07,
+                  width: width * 0.8,
+                  height: height * 0.07,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(widget.width! * 0.03),
+                      borderRadius: BorderRadius.circular(width * 0.03),
                       border: Border.all(width: 1)
                   ),
                   child: Row(
@@ -58,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Icon(Icons.account_circle),
                       SizedBox(
-                        width: widget.width! * 0.6,
-                        height: widget.height! * 0.068,
+                        width: width * 0.6,
+                        height: height * 0.068,
                         child: TextField(
                           onChanged: (value) {
                             setState(() {
@@ -79,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: widget.width! * 0.0583,
+                        width: width * 0.0583,
                       ),
                     ],
                   ),
@@ -87,18 +90,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 //간격
                 SizedBox(
-                  height: widget.height! * 0.02,
+                  height: height * 0.02,
                 ),
 
                 //비밀번호 입력 필드
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.height! * 0.05),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, height * 0.05),
                   child: Container(
-                    width: widget.width! * 0.8,
-                    height: widget.height! * 0.07,
+                    width: width * 0.8,
+                    height: height * 0.07,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            widget.width! * 0.03),
+                            width * 0.03),
                         border: Border.all(width: 1)
                     ),
                     child: Row(
@@ -106,8 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Icon(Icons.key),
                         SizedBox(
-                          width: widget.width! * 0.6,
-                          height: widget.height! * 0.068,
+                          width: width * 0.6,
+                          height: height * 0.068,
                           child: TextField(
                             onChanged: (value) {
                               setState(() {
@@ -152,12 +155,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 //로그인 버튼
                 Padding(
                   //로그인 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.width! * 0.01),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, width * 0.01),
 
                   //버튼의 크기를 정하는 박스
                   child: SizedBox(
-                    width: widget.width! * 0.5,
-                    height: widget.height! * 0.06,
+                    width: width * 0.5,
+                    height: height * 0.06,
                     //버튼
                     child: ElevatedButton(
                       //버튼 입력시 실행 정보
@@ -178,8 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Color(0xFF595959),
                             ),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(widget
-                                    .height! * 0.02)
+                                borderRadius: BorderRadius.circular(height * 0.02)
                             )
                         ),
 
@@ -192,12 +194,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+
+                //회원가입 버튼
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, widget.height!*0.27),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, height*0.27),
                   child: TextButton(
                     onPressed: (){
                       Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => RegisterScreen(width: widget.width,height: widget.height,))
+                          MaterialPageRoute(builder: (context) => RegisterScreen())
                       );
                     },
                     child: Text('회원가입',style: TextStyle(color: Colors.black),),

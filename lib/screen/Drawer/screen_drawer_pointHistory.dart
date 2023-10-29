@@ -19,12 +19,13 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          //appBar 배경화면 한얀색
+          //appBar 배경화면 한얀색의
           backgroundColor: Colors.white,
 
           //appBar 그림자 없애기
           elevation: 0,
 
+          //제목
           title: Text(
             '포인트 이용 내역',
             style: TextStyle(
@@ -32,19 +33,21 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
             ),
           ),
           centerTitle: true,
-          //
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body: Center(
+          //이용 내역 builder
           child: ListView.builder(
             itemCount: 50,
             itemBuilder: (context, index) {
+              //카드형식 반환
               return Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 margin: EdgeInsets. symmetric (vertical: 10, horizontal: 40),
+                //컨테이너
                 child: Container(
                     width: width*0.8,
                     height: height*0.12,

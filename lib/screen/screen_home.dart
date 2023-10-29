@@ -6,6 +6,7 @@ import 'package:precycler/screen/Drawer/screen_drawer_errorInquiry.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_help.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_policy.dart';
 
+
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
   @override
@@ -13,14 +14,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     //미디어 쿼리로 width와 height을 지정하여 상대적인 수치 사용
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
     double height = screenSize.height;
+
+    //DraggableScrollableSheet의 최대, 최소 크기
+    double maxheight = height*0.3;
+    double minheight = height;
+
+    //위에서 정한 DraggableScrollableSheet의 크기에 따라서 서버로부터 data를 받아올지 말지 결정
+    bool getData = false;
 
     //상태표지줄과 네비게이션 바와 겹치지 않는 안전한 영역을 반환
     return SafeArea(
@@ -39,12 +45,16 @@ class _HomeScreenState extends State<HomeScreen> {
             //appBar 그림자 없애기
             elevation: 0,
 
-            //
+            //appbar의 아이콘 색은 black으로
             iconTheme: IconThemeData(color: Colors.black),
           ),
+
+          //drawer
           drawer: Drawer(
+            //column, 세로 정렬
             child: Column(
               children: [
+                //drawer 메뉴의 항목들을 넣을 공간을 최대한 채우기
                 Expanded(
                     child: ListView(
                       padding: EdgeInsets.fromLTRB(0, width*0.1, 0, 0),
@@ -137,6 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                 ),
+
+                //로그아웃, 회원탈퇴 부분
                 Padding(
                     padding: EdgeInsets.only(bottom: width*0.04),
                     child:Row(
@@ -163,24 +175,45 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             )
           ),
+
+          //body 부분, scrollableSheet와 겹쳐야 하므로 Stack 사용
           body: Stack(
             children: [
+              //가운데 부분에는 카메라 뷰어와 셔터버튼이 들어가야하므로 커스텀 위젯인 CameraWidget 호출
               Center(
                 child: CameraWidget(),
               ),
+
+              //말그대로 드래그가 가능하고 스크롤도 가능한 시트이다
               DraggableScrollableSheet(
-                initialChildSize: 0.15, // 시작할 때 하단에서 보일 높이 (0.0에서 1.0 사이)
-                minChildSize: 0.15, // 최소 높이 (0.0에서 1.0 사이)
-                maxChildSize: 1, // 최대 높이 (0.0에서 1.0 사이)
-                expand: true, // 위로 슬라이드하여 확장할 수 있는지 여부
+                initialChildSize: 0.15,
+                minChildSize: 0.15,
+                maxChildSize: 1,
+                expand: true,
+                snap: false,
                 builder: (context, scrollController) {
-                  return Container(
-                    color: Colors.transparent,
-                    child: ListView(
+                  //LayoutBuilder로 ListView를 만들기
+                  return LayoutBuilder(builder: (context,constraints){
+                    //DraggableScrollableSheet의 height크기를 가져와 sheetHeight에 저장
+                    double sheetHeight = constraints.maxHeight;
+                    //sheetHeight의 변화에 따라 최대, 최소크기 지정
+                    maxheight = (maxheight < sheetHeight)? sheetHeight : maxheight;
+                    minheight = (minheight > sheetHeight)? sheetHeight : minheight;
+
+                    //현재 DraggableScrollableSheet가 하단에 내려진 상태인지에 따라서
+                    //서버로부터 정보를 가져올지 지정
+                    getData = (sheetHeight <= minheight)?false:true;
+
+                    //로그 출력
+                    print("hi"+sheetHeight.toString() +"         "+maxheight.toString()+"       "+minheight.toString() +"            "+getData.toString());
+
+                    //리스트뷰 반환
+                    return ListView(
                       controller: scrollController,
                       children: [
+                        //리스트로 사용할 컨테이너를 호출
                         Container(
-                          height: height*0.888,
+                          height: (maxheight<height*0.3)?height*0.3:maxheight,
                           decoration: BoxDecoration(
                               border: Border.all(width: 1),
                               borderRadius: BorderRadius.only(
@@ -189,13 +222,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               color: Colors.white
                           ),
+
+                          //컨테이너 내부에 Column, 세로 정렬
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              //드래그하여 올릴 부분이며 내부에 화살표가 있다
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, width*0.05, 0, width*0.06),
                                 child: Icon(Icons.keyboard_arrow_up_rounded,size: 70,),
                               ),
+
+                              //현재 위치 표시 위젯
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, 0, 0, width*0.06),
                                 child: Text(
@@ -205,6 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
+
+                              //포인트 획득 가능 가게들과 주소, 나와 떨어진 거리 표시 위젯
                               Expanded(
                                 child: ListView.builder(
                                   controller: scrollController,
@@ -252,10 +292,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
-                    ),
-                  );
+                    );
+                  });
                 },
               ),
             ],

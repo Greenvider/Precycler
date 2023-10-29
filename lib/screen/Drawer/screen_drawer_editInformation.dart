@@ -2,28 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:precycler/screen/screen_login.dart';
 
 class EditInformationDrawer extends StatefulWidget {
-  const EditInformationDrawer({super.key});
-
   @override
   State<EditInformationDrawer> createState() => _EditInformationDrawerState();
 }
 
 class _EditInformationDrawerState extends State<EditInformationDrawer> {
+  //변경할 이름
   late String name;
 
-  //회원가입 창에서 입력받을 아이디
+  //변경할 아이디
   late String id;
 
-  //회원가입 창에서 입력받을 비밀번호
+  //변경할 비번
   late String password;
 
+  //변경할 비번 확인
   late String _password;
 
-
+  //현재 비번으로 확인하여 변경이 가능한지를 확인하는 변수
   bool canChange = false;
 
   //비밀번호표시의 현재 아이콘
   IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+
+  //비밀번호확인 표시의 현재 아이콘
   IconData _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
 
   @override
@@ -32,8 +34,6 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
     double height = screenSize.height;
-
-
 
     return SafeArea(
       child: Scaffold(
@@ -47,6 +47,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
           //appBar 그림자 없애기
           elevation: 0,
 
+          //제목 '개인 정보 변경'
           title: Text(
             '개인 정보 변경',
             style: TextStyle(
@@ -54,11 +55,12 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
             ),
           ),
           centerTitle: true,
-          //
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body: Center(
+          //만약 현재 정보를 변경할 수 있는 상태라면
           child: (canChange)
+              //변경 화면 표시
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -309,7 +311,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                             Navigator.pop(context);
 
                             //홈 페이지로 전환
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen(width: width,height: height,)));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
                           },
 
                           //버튼 스타일
@@ -334,9 +336,11 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                     ),
                   ],
                 )
+              //만약 변경할 수 없는 상태라면
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    //현재 비밀번호 입력 창
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 0, height * 0.03),
                       child: Container(
@@ -394,8 +398,10 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         ),
                       ),
                     ),
+
+                    //변경 버튼
                     Padding(
-                      //로그인 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
+                      //변경 버튼 아래쪽 패딩값을 화면 가로길이의 0.5배로
                       padding: EdgeInsets.fromLTRB(0, 0, 0, width * 0.3),
 
                       //버튼의 크기를 정하는 박스
