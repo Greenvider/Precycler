@@ -42,10 +42,10 @@ class _PolicyDrawerState extends State<PolicyDrawer> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           //appBar 배경화면 한얀색
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //appBar 그림자 없애기
           elevation: 0,
@@ -53,18 +53,22 @@ class _PolicyDrawerState extends State<PolicyDrawer> {
           title: Text(
             '정책',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold
             ),
           ),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Center(
           child: Container(
             width: width*0.9,
             child: SingleChildScrollView(
               child: Text(
-                  fileContent
+                  fileContent,
+                style: TextStyle(
+                  color: Colors.white
+                ),
               ),
             ),
           )

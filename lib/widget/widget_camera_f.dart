@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/screen/screen_home.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class CameraWidget extends StatefulWidget {
   UserData? userData;
@@ -34,6 +35,7 @@ class _CameraWidgetState extends State<CameraWidget>
   String IncDec = "";
 
   int ChangePoint = 0;
+
 
   //위젯 초기화 함수
   @override

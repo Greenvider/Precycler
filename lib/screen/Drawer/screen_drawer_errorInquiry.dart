@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:precycler/model/model_UserData.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ErrorInquiryDrawer extends StatefulWidget {
-  const ErrorInquiryDrawer({super.key});
+  UserData? userData;
+
+  ErrorInquiryDrawer({super.key, this.userData});
 
   @override
   State<ErrorInquiryDrawer> createState() => _ErrorInquiryDrawerState();
@@ -10,6 +16,50 @@ class ErrorInquiryDrawer extends StatefulWidget {
 class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
   //문의 내용
   String inquiry = "";
+
+  Future<UserData?> putInquiry(UserData userData) async {
+    final response = await http.post(
+      Uri.parse('http://43.202.220.164:8000/inquiry/'), // 실제 API 엔드포인트로 대체하세요
+      body: {
+        'mid': userData.id,
+        'content':inquiry,
+      },
+    );
+    if (response.statusCode == 200) {
+      // 요청이 성공한 경우
+      final responseData = json.decode(response.body);
+      if(responseData == 'ok'){
+        Fluttertoast.showToast(
+          msg: "문의가 정상적으로 진행되었습니다",
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.grey,
+          fontSize: 15,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+      else{
+        Fluttertoast.showToast(
+          msg: "문의를 보내는 중 에러가 발생하였습니다",
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.grey,
+          fontSize: 15,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: "문의 양식이 올바르지 않습니다",
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.grey,
+        fontSize: 15,
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+    return userData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +72,10 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
       child: Scaffold(
         //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           //appBar 배경화면 한얀색
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //appBar 그림자 없애기
           elevation: 0,
@@ -33,11 +83,12 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
           title: Text(
             '버그 문의',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold
             ),
           ),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Center(
           child: Column(
@@ -65,15 +116,17 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                   decoration: InputDecoration(
                       hintText: '문의 내용을 설명해주세요',
                       hintStyle: TextStyle(
-                        color: Colors.grey,
+                        color: Colors.white,
                       ),
                       filled: false,
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1)
+                          borderSide: BorderSide(width: 2,color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20))
                       ),
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1)
-                      )
+                          borderSide: BorderSide(width: 2,color: Colors.white),
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                      ),
                   ),
 
                   //최대 최소 길이
@@ -101,15 +154,17 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                     //버튼 입력시 실행 정보
                     onPressed: () {
                       //문의하기 로직 동작
+                      putInquiry(widget.userData!);
 
                       Navigator.pop(context);
                     },
 
                     //버튼 스타일
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: Colors.black,
                         side: BorderSide(
-                          color: Color(0xFF595959),
+                          color: Colors.white,
+                          width: 2
                         ),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(height * 0.02)
@@ -119,7 +174,7 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                     //버튼 내용
                     child: Text('문의하기',
                       style: TextStyle(
-                          color: Colors.black
+                          color: Colors.white,
                       ),
                     ),
                   ),

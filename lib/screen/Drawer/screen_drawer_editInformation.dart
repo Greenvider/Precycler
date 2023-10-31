@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:precycler/screen/screen_login.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:precycler/model/model_UserData.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class EditInformationDrawer extends StatefulWidget {
+  UserData? userData;
+
+  EditInformationDrawer({super.key, this.userData});
+
   @override
   State<EditInformationDrawer> createState() => _EditInformationDrawerState();
 }
 
 class _EditInformationDrawerState extends State<EditInformationDrawer> {
   //변경할 이름
-  late String name;
-
-  //변경할 아이디
-  late String id;
+  String? name;
 
   //변경할 비번
-  late String password;
+  String? password;
 
   //변경할 비번 확인
-  late String _password;
+  String? _password;
 
   //현재 비번으로 확인하여 변경이 가능한지를 확인하는 변수
   bool canChange = false;
@@ -27,6 +32,93 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
 
   //비밀번호확인 표시의 현재 아이콘
   IconData _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+
+  TextEditingController controller_n = TextEditingController();
+  TextEditingController controller_p = TextEditingController();
+
+  void initState(){
+    controller_n.text = widget.userData!.name.toString();
+    controller_p.text = widget.userData!.password.toString();
+
+
+    name = widget.userData!.name.toString();
+    password = widget.userData!.password.toString();
+
+  }
+
+  Future<void> getchange() async {
+    print("--------------------------------"+widget.userData!.point.toString());
+    print("--------------------------------"+widget.userData!.id.toString());
+    print("--------------------------------"+name.toString());
+    print("--------------------------------"+password.toString());
+
+    String point = widget.userData!.point.toString();
+    String id = widget.userData!.id.toString();
+
+    final response = await http.put(
+      Uri.parse('http://43.202.220.164:8000/change/'), // 실제 API 엔드포인트로 대체 하세요
+      body: {
+        'mid':id,
+        'name':name,
+        'password':password,
+        'point':point,
+      },
+    );
+    if (response.statusCode == 200) {
+      // 요청이 성공한 경우
+      final responseData = json.decode(response.body);
+
+      if(responseData=='ok'){
+        widget.userData!.name = name;
+        widget.userData!.password = password;
+        Fluttertoast.showToast(
+          msg: "변경 성공",
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.grey,
+          fontSize: 15,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+        );
+
+
+        //현재 페이지 종료
+        Navigator.pop(context);
+
+        //홈 페이지로 전환
+        Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
+      }
+      else if (responseData=="rpas"){
+        Fluttertoast.showToast(
+          msg: "비밀번호 양식 오류",
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.grey,
+          fontSize: 15,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+      else{
+        Fluttertoast.showToast(
+          msg: "정보 변경 실패 2",
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.grey,
+          fontSize: 15,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+
+    }else{
+      Fluttertoast.showToast(
+        msg: "정보 변경 실패",
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.grey,
+        fontSize: 15,
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +131,10 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
       child: Scaffold(
         //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           //appBar 배경화면 한얀색
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //appBar 그림자 없애기
           elevation: 0,
@@ -51,11 +143,12 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
           title: Text(
             '개인 정보 변경',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold
             ),
           ),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Center(
           //만약 현재 정보를 변경할 수 있는 상태라면
@@ -70,6 +163,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         style: TextStyle(
                           fontSize: width * 0.1,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -85,73 +179,34 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                       height: height * 0.07,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(width * 0.03),
-                          border: Border.all(width: 1)
+                          border: Border.all(width: 2,color: Colors.white)
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.short_text_outlined),
+                          Icon(Icons.short_text_outlined,color: Colors.white,),
                           SizedBox(
                             width: width * 0.6,
                             height: height * 0.068,
                             child: TextField(
+                              controller: controller_n,
                               onChanged: (value) {
                                 setState(() {
                                   name = value;
                                 });
                               },
+                              style: TextStyle(color:Colors.white),
+                              cursorColor: Colors.white,
                               decoration: InputDecoration(
                                   hintText: '이름을 입력해주세요',
                                   hintStyle: TextStyle(
-                                    color: Colors.grey,
+                                    color: Colors.white,
                                   ),
                                   filled: false,
                                   enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide.none
-                                  )
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: width * 0.0583,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    //간격
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-
-                    // 아이디 입력 필드
-                    Container(
-                      width: width * 0.8,
-                      height: height * 0.07,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(width * 0.03),
-                          border: Border.all(width: 1)
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.account_circle),
-                          SizedBox(
-                            width: width * 0.6,
-                            height: height * 0.068,
-                            child: TextField(
-                              onChanged: (value) {
-                                setState(() {
-                                  id = value;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                  hintText: '아이디를 입력해주세요',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
                                   ),
-                                  filled: false,
-                                  enabledBorder: OutlineInputBorder(
+                                  focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide.none
                                   )
                               ),
@@ -178,29 +233,34 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                                 width * 0.03),
-                            border: Border.all(width: 1)
+                            border: Border.all(width: 2,color: Colors.white)
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.key),
+                            Icon(Icons.key,color: Colors.white,),
                             SizedBox(
                               width: width * 0.6,
                               height: height * 0.068,
                               child: TextField(
+                                controller: controller_p,
                                 onChanged: (value) {
                                   setState(() {
                                     password = value;
                                   });
-                                },
+                                },style: TextStyle(color:Colors.white),
+                                cursorColor: Colors.white,
                                 obscureText: (showPwdCurrenIcon == Icons.remove_red_eye)?true:false,
                                 decoration: InputDecoration(
                                     hintText: '비밀번호를 입력해주세요',
                                     hintStyle: TextStyle(
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                     ),
                                     filled: false,
                                     enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none
                                     )
                                 ),
@@ -220,7 +280,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                                   }
                                 });
                               },
-                              icon: Icon(showPwdCurrenIcon),
+                              icon: Icon(showPwdCurrenIcon,color: Colors.white,),
                             ),
 
                           ],
@@ -242,12 +302,12 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                                 width * 0.03),
-                            border: Border.all(width: 1)
+                            border: Border.all(width: 2,color: Colors.white)
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.key),
+                            Icon(Icons.key,color: Colors.white,),
                             SizedBox(
                               width: width * 0.6,
                               height: height * 0.068,
@@ -257,14 +317,19 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                                     _password = value;
                                   });
                                 },
+                                style: TextStyle(color:Colors.white),
+                                cursorColor: Colors.white,
                                 obscureText: (_showPwdCurrenIcon == Icons.remove_red_eye)?true:false,
                                 decoration: InputDecoration(
                                     hintText: '비밀번호를 다시 입력해주세요',
                                     hintStyle: TextStyle(
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                     ),
                                     filled: false,
                                     enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none
                                     )
                                 ),
@@ -284,7 +349,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                                   }
                                 });
                               },
-                              icon: Icon(_showPwdCurrenIcon),
+                              icon: Icon(_showPwdCurrenIcon,color: Colors.white,),
                             ),
 
                           ],
@@ -304,21 +369,17 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         //버튼
                         child: ElevatedButton(
                           //버튼 입력시 실행 정보
-                          onPressed: () {
+                          onPressed: () async {
                             //로그인 로직 동작
-
-                            //현재 페이지 종료
-                            Navigator.pop(context);
-
-                            //홈 페이지로 전환
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
+                            await getchange();
                           },
 
                           //버튼 스타일
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.black,
                               side: BorderSide(
-                                color: Color(0xFF595959),
+                                color: Colors.white,
+                                width: 2
                               ),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(height * 0.02)
@@ -328,7 +389,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                           //버튼 내용
                           child: Text('정보 변경하기',
                             style: TextStyle(
-                                color: Colors.black
+                                color: Colors.white
                             ),
                           ),
                         ),
@@ -349,12 +410,12 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(
                                 width * 0.03),
-                            border: Border.all(width: 1)
+                            border: Border.all(width: 2,color: Colors.white)
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.key),
+                            Icon(Icons.key,color: Colors.white,),
                             SizedBox(
                               width: width * 0.6,
                               height: height * 0.068,
@@ -363,15 +424,19 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                                   setState(() {
                                     _password = value;
                                   });
-                                },
+                                },style: TextStyle(color:Colors.white),
+                                cursorColor: Colors.white,
                                 obscureText: (_showPwdCurrenIcon == Icons.remove_red_eye)?true:false,
                                 decoration: InputDecoration(
                                     hintText: '현재 비밀번호를 입력해주세요',
                                     hintStyle: TextStyle(
-                                      color: Colors.grey,
+                                      color: Colors.white,
                                     ),
                                     filled: false,
                                     enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none
                                     )
                                 ),
@@ -391,7 +456,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                                   }
                                 });
                               },
-                              icon: Icon(_showPwdCurrenIcon),
+                              icon: Icon(_showPwdCurrenIcon,color: Colors.white,),
                             ),
 
                           ],
@@ -412,16 +477,29 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         child: ElevatedButton(
                           //버튼 입력시 실행 정보
                           onPressed: () {
-                            setState(() {
-                              canChange = true;
-                            });
+                            if(_password == widget.userData!.password){
+                              setState(() {
+                                canChange = true;
+                              });
+                            }
+                            else{
+                              Fluttertoast.showToast(
+                                msg: "비밀번호가 일치하지 않습니다",
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.grey,
+                                fontSize: 15,
+                                textColor: Colors.white,
+                                toastLength: Toast.LENGTH_LONG,
+                              );
+                            }
                           },
 
                           //버튼 스타일
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.black,
                               side: BorderSide(
-                                color: Color(0xFF595959),
+                                color: Colors.white,
+                                width: 2
                               ),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(height * 0.02)
@@ -431,7 +509,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                           //버튼 내용
                           child: Text('변경하기',
                             style: TextStyle(
-                                color: Colors.black
+                                color: Colors.white,
                             ),
                           ),
                         ),

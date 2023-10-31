@@ -17,10 +17,10 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           //appBar 배경화면 한얀색의
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //appBar 그림자 없애기
           elevation: 0,
@@ -29,11 +29,12 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
           title: Text(
             '포인트 이용 내역',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold
             ),
           ),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Center(
           //이용 내역 builder
@@ -45,12 +46,15 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(width: 2,color: Colors.white)
                 ),
                 margin: EdgeInsets. symmetric (vertical: 10, horizontal: 40),
+                color: Colors.black,
                 //컨테이너
                 child: Container(
                     width: width*0.8,
                     height: height*0.12,
+                    color: Colors.black,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -60,18 +64,21 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
                             Text((index%2==0)?'$index 버스':'$index 가게',
                               textAlign: TextAlign.start,
                               style: TextStyle(
-                                  fontSize: 15
+                                  fontSize: 15,
+                                color: Colors.white
                               ),
                             ),
                             Text('yyyy/mm/dd hh:mm:ss',
                               textAlign: TextAlign.start,
                               style: TextStyle(
-                                  fontSize: 15
+                                  fontSize: 15,
+                                  color: Colors.white
                               ),
                             ),
                             Text('0000시 성북구 화랑도 11길 26',
                               style: TextStyle(
-                                  fontSize: 15
+                                  fontSize: 15,
+                                  color: Colors.white
                               ),
                             ),
 
@@ -79,7 +86,8 @@ class _PointHistoryDrawerState extends State<PointHistoryDrawer> {
                         ),
                         Text((index%2==0)?'+ '+'$index'+'P':'- '+'$index'+'P',
                           style: TextStyle(
-                              fontSize: 20
+                              fontSize: 20,
+                              color: Colors.white
                           ),
                         ),
                       ],

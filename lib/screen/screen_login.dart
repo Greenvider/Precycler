@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'screen_home.dart';
 import 'screen_register.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:precycler/model/model_UserData.dart';
+import 'package:precycler/request/request_django.dart';
+import 'package:precycler/widget/widget_custom.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,6 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //로그인 창에서 입력받을 비밀번호
   late String password;
+
+  UserData userData = UserData();
 
   //비밀번호표시의 현재 아이콘
   IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
@@ -55,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: width * 0.8,
                   height: height * 0.07,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(width * 0.03),
-                      border: Border.all(width: 1,color: Colors.white),
+                    borderRadius: BorderRadius.circular(width * 0.03),
+                    border: Border.all(width: 1,color: Colors.white),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -74,11 +82,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(color:Colors.white),
                           cursorColor: Colors.white,
                           decoration: InputDecoration(
-                              hintText: '아이디를 입력해주세요',
-                              hintStyle: TextStyle(
-                                color: Colors.white,
-                              ),
-                              filled: false,
+                            hintText: '아이디를 입력해주세요',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                            filled: false,
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide.none,
                             ),
@@ -176,14 +184,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     //버튼
                     child: ElevatedButton(
                       //버튼 입력시 실행 정보
-                        onPressed: () {
+                        onPressed: () async {
                           //로그인 로직 동작
-
-                          //현재 페이지 종료
-                          Navigator.pop(context);
-
-                          //홈 페이지로 전환
-                          Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreen()));
+                          await login(context,id,password,userData);
                         },
 
                         //버튼 스타일

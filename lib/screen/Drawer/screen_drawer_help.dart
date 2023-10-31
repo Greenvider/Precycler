@@ -12,10 +12,10 @@ class _HelpDrawerState extends State<HelpDrawer> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           //appBar 배경화면 한얀색
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //appBar 그림자 없애기
           elevation: 0,
@@ -23,12 +23,13 @@ class _HelpDrawerState extends State<HelpDrawer> {
           title: Text(
             '도움말',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold
             ),
           ),
           centerTitle: true,
           //
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Center(
 

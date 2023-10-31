@@ -47,6 +47,7 @@ dependencies:
   fluttertoast:
   geolocator:
   geocoding:
+  http:
 
 dev_dependencies:
   flutter_test:

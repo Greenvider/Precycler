@@ -1,15 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:precycler/widget/widget_camera.dart';
+import 'package:precycler/widget/widget_camera_f.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_pointHistory.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_editInformation.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_errorInquiry.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_help.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_policy.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:precycler/model/model_UserData.dart';
+import 'package:precycler/model/model_StoreData.dart';
+import "package:flutter/foundation.dart";
 
+Future<UserData?> getPoint(UserData userData) async {
+  final response = await http.post(
+    Uri.parse('http://43.202.220.164:8000/point/'), // 실제 API 엔드포인트로 대체하세요
+    body: {
+      'mid': userData.id,
+    },
+  );
+  if (response.statusCode == 200) {
+    // 요청이 성공한 경우
+    final responseData = json.decode(response.body);
+    List<String> r = responseData.toString().split('|');
+    userData.point = int.parse(r[1]);
+    userData.name = r[0];
+  } else {
+    Fluttertoast.showToast(
+      msg: "포인트 불러오기 실패",
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.grey,
+      fontSize: 15,
+      textColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+    );
+  }
+  return userData;
+}
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  UserData? userData;
+
+
+
+  HomeScreen({super.key,this.userData});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -19,6 +54,70 @@ class _HomeScreenState extends State<HomeScreen> {
   double latitude = 0;
   double longitude = 0;
   String address = '';
+
+  List<StoreData> mapdata = [];
+
+  String myLocation = '';
+
+
+  void initState() {
+    get();
+  }
+
+  void get() async {
+    widget.userData = await getPoint(widget.userData!);
+  }
+
+  Future<void> getMap(String lat, String log) async {
+    final response = await http.post(
+      Uri.parse('http://43.202.220.164:8000/map/'), // 실제 API 엔드포인트로 대체하세요
+      body: {
+        'lat':lat,
+        'log':log,
+      },
+    );
+    if (response.statusCode == 200) {
+      // 요청이 성공한 경우
+      final responseData = json.decode(response.body);
+      mapdata = [];
+      for(var a in responseData){
+        var b = a['nl'];
+        int c = a['dis'].toInt();
+        var e = (b.toString()).split('|');
+        StoreData s = StoreData(name: e[0], address: e[1], distance: c);
+        mapdata.add(s);
+      }
+
+
+    } else {
+      Fluttertoast.showToast(
+        msg: "가게 정보 불러오기 실패",
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.grey,
+        fontSize: 15,
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+  }
+
+  Future<void> getPos(String lat, String log) async {
+    final response = await http.post(
+      Uri.parse('http://43.202.220.164:8000/addr/'), // 실제 API 엔드포인트로 대체하세요
+      body: {
+        'lat':lat,
+        'log':log,
+      },
+    );
+    if (response.statusCode == 200) {
+      // 요청이 성공한 경우
+      final responseData = json.decode(response.body);
+
+      myLocation = responseData.toString();
+
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
 
+
     //상태표지줄과 네비게이션 바와 겹치지 않는 안전한 영역을 반환
     return SafeArea(
         child: Scaffold(
           //배경 색은 하얀색으로
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
 
           //키보드를 활성화해도 위젯이 위로 올라가지 않도록 설정
           resizeToAvoidBottomInset: false,
@@ -54,17 +154,18 @@ class _HomeScreenState extends State<HomeScreen> {
           //appBar
           appBar: AppBar(
             //appBar 배경화면 한얀색
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.black,
 
             //appBar 그림자 없애기
             elevation: 0,
 
             //appbar의 아이콘 색은 black으로
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: Colors.white),
           ),
 
           //drawer
           drawer: Drawer(
+            backgroundColor: Colors.black,
             //column, 세로 정렬
             child: Column(
               children: [
@@ -74,35 +175,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.fromLTRB(0, width*0.1, 0, 0),
                       children: [
                         //포인트 이용 내역
-                        ListTile(
-                          title: Text(
-                            '포인트 이용 내역',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20
-                            ),
-                          ),
-                          onTap: (){
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => PointHistoryDrawer(),
-                              ),
-                            );
-                          },
-                        ),
+                        // ListTile(
+                        //   title: Text(
+                        //     '포인트 이용 내역',
+                        //     textAlign: TextAlign.center,
+                        //     style: TextStyle(
+                        //       fontSize: 20,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        //   onTap: (){
+                        //     Navigator.of(context).push(
+                        //       MaterialPageRoute(
+                        //         builder: (context) => PointHistoryDrawer(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         //개인정보 변경
                         ListTile(
                           title: Text(
                             '개인정보 변경',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20
+                                fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                           onTap: (){
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => EditInformationDrawer(),
+                                builder: (context) => EditInformationDrawer(userData: widget.userData,),
                               ),
                             );
                           },
@@ -113,13 +216,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             '버그 문의',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20
+                                fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                           onTap: (){
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => ErrorInquiryDrawer(),
+                                builder: (context) => ErrorInquiryDrawer(userData: widget.userData,),
                               ),
                             );
                           },
@@ -130,7 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             '도움말',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20
+                                fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                           onTap: (){
@@ -147,7 +252,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             '정책',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20
+                                fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                           onTap: (){
@@ -169,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Flexible(
                             child: ListTile(
-                              title: Text('로그아웃',textAlign: TextAlign.center,),
+                              title: Text('로그아웃',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
                               onTap: (){
 
                               },
@@ -177,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Flexible(
                           child: ListTile(
-                            title: Text('회원탈퇴',textAlign: TextAlign.center,),
+                            title: Text('회원탈퇴',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
                             onTap: (){
 
                             },
@@ -195,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               //가운데 부분에는 카메라 뷰어와 셔터버튼이 들어가야하므로 커스텀 위젯인 CameraWidget 호출
               Center(
-                child: CameraWidget(),
+                child: CameraWidget(userData:widget.userData),
               ),
 
               //말그대로 드래그가 가능하고 스크롤도 가능한 시트이다
@@ -207,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 snap: false,
                 builder: (context, scrollController) {
                   //LayoutBuilder로 ListView를 만들기
-                  return LayoutBuilder(builder: (context,constraints){
+                  return LayoutBuilder(builder: (context,constraints) {
                     //DraggableScrollableSheet의 height크기를 가져와 sheetHeight에 저장
                     double sheetHeight = constraints.maxHeight;
                     //sheetHeight의 변화에 따라 최대, 최소크기 지정
@@ -224,7 +330,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       bool loop = true;
 
                       getLocationData();
-                      print(longitude.toString()+"  /  "+latitude.toString());
+
+                      getMap(latitude.toString(),longitude.toString());
+
+                      getPos(latitude.toString(),longitude.toString());
+
                     }
 
                     //리스트뷰 반환
@@ -235,12 +345,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           height: (maxheight<height*0.3)?height*0.3:maxheight,
                           decoration: BoxDecoration(
-                              border: Border.all(width: 1),
+                              border: Border.all(width: 5,color: Colors.white),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(30),
                                 topRight: Radius.circular(30),
                               ),
-                              color: Colors.white
+                              color: Colors.black
                           ),
 
                           //컨테이너 내부에 Column, 세로 정렬
@@ -250,16 +360,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               //드래그하여 올릴 부분이며 내부에 화살표가 있다
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, width*0.05, 0, width*0.06),
-                                child: Icon(Icons.keyboard_arrow_up_rounded,size: 70,),
+                                child: Icon(Icons.keyboard_arrow_up_rounded,size: 70,color: Colors.white,),
                               ),
 
                               //현재 위치 표시 위젯
                               Padding(
                                 padding: EdgeInsets.fromLTRB(0, 0, 0, width*0.06),
                                 child: Text(
-                                  '현재 위치 : 00시 00구 00동 ~로',
+                                  '현재위치 : ${myLocation}',
                                   style: TextStyle(
                                     fontSize: 22,
+                                    color: Colors.white
                                   ),
                                 ),
                               ),
@@ -268,41 +379,60 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: ListView.builder(
                                   controller: scrollController,
-                                  itemCount: 50,
+                                  itemCount: mapdata.length,
                                   itemBuilder: (context, index) {
+                                    StoreData s = mapdata[index];
                                     return Card(
                                       elevation: 5,
+                                      color: Colors.black,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
+                                        side: BorderSide(color: Colors.white,width: 2)
                                       ),
                                       margin: EdgeInsets. symmetric (vertical: 10, horizontal: 40),
                                       child: Container(
                                           width: width*0.8,
                                           height: height*0.12,
+                                          color: Colors.black,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  Text('$index 가게',
-                                                    style: TextStyle(
-                                                        fontSize: 20
+                                              Container(
+                                                width: width*0.55,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Container(
+                                                      width: width*0.45,
+                                                      child: Text('${s.name}',
+                                                        style: TextStyle(
+                                                            fontSize: 19,
+                                                            color: Colors.white
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text('0000시 성북구 화랑도 11길 26',
-                                                    style: TextStyle(
-                                                        fontSize: 15
+                                                    Container(
+                                                      width: width*0.45,
+                                                      child: Text('${s.address}',
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.white
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
 
-                                                ],
-                                              ),
-                                              Text('$index km',
-                                                style: TextStyle(
-                                                    fontSize: 20
+                                                  ],
                                                 ),
                                               ),
+                                              Expanded(
+                                                child: Text('${(double.parse(((s.distance/1000).toString())+((s.distance%1000).toString())).toStringAsFixed(2)).toString()+" km"}',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.white
+                                                  ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              )
                                             ],
                                           )
                                       ),
