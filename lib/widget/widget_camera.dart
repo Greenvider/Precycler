@@ -13,6 +13,7 @@ import 'package:precycler/screen/screen_home.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'widget_custom.dart';
 
 class CameraWidget extends StatefulWidget {
   UserData? userData;
@@ -32,8 +33,10 @@ class _CameraWidgetState extends State<CameraWidget>
   //카메라 컨트롤러
   late CameraController _cameraController;
 
+  //포인트를 증가시킬건지 감소시킬건지 결정하는 변수
   String IncDec = "";
 
+  //변경할 포인트 값
   int ChangePoint = 0;
 
   //위젯 초기화 함수
@@ -98,6 +101,7 @@ class _CameraWidgetState extends State<CameraWidget>
   //셔터를 누르고 페이지 전환 사이에서 현재 로딩중인지를 판단하는 변수
   bool _isLoadingChangePointScreen = false;
 
+  //qr 분석
   Future<void> scanQr(String image) async {
     final response = await http.post(
       Uri.parse('http://43.202.220.164:8000/qr/'), // 실제 API 엔드포인트로 대체하세요
@@ -110,7 +114,7 @@ class _CameraWidgetState extends State<CameraWidget>
       // 요청이 성공한 경우
       final responseData = json.decode(response.body);
 
-      print("----------------------------------------------------------------------"+responseData.toString());
+      //포인트 사용인 경우
       if(responseData.toString().contains('_')){
         List<String> r = responseData.toString().split('_');
         int r1 = int.parse(r[1]);
@@ -121,12 +125,14 @@ class _CameraWidgetState extends State<CameraWidget>
         //포인트 전환 페이지로 이동
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint),
+            builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint,userData: widget.userData,),
           ),
         );
       }
+      //포인트 사용이 아닌 경우
       else{
         switch(responseData){
+          //환경 행동
           case 'ecoact':
             widget.userData = await getPoint(widget.userData!);
             IncDec="Inc";
@@ -135,10 +141,12 @@ class _CameraWidgetState extends State<CameraWidget>
             //포인트 전환 페이지로 이동
             await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint),
+                builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint,userData: widget.userData,),
               ),
             );
             break;
+
+          //대중교통
           case 'bus':
             widget.userData = await getPoint(widget.userData!);
             IncDec="Inc";
@@ -147,52 +155,26 @@ class _CameraWidgetState extends State<CameraWidget>
             //포인트 전환 페이지로 이동
             await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint),
+                builder: (context) => ChangePointScreen(IncDec:IncDec,ChangePoint:ChangePoint,userData: widget.userData,),
               ),
             );
             break;
+
           case 'error1':
-            Fluttertoast.showToast(
-              msg: "이미지를 제대로 촬영해주세요",
-              gravity: ToastGravity.CENTER,
-              backgroundColor: Colors.black,
-              fontSize: 15,
-              textColor: Colors.white,
-              toastLength: Toast.LENGTH_LONG,
-            );
+            flutter_show_toast("이미지를 제대로 촬영해주세요");
             break;
+
           case 'error2':
-            Fluttertoast.showToast(
-              msg: "Precycler에서 제공하지 않은 QR입니다",
-              gravity: ToastGravity.CENTER,
-              backgroundColor: Colors.grey,
-              fontSize: 15,
-              textColor: Colors.white,
-              toastLength: Toast.LENGTH_LONG,
-            );
+            flutter_show_toast("Precycler에서 제공하지 않은 QR입니다");
             break;
+
           case 'nom':
-            Fluttertoast.showToast(
-              msg: "포인트가 부족합니다",
-              gravity: ToastGravity.CENTER,
-              backgroundColor: Colors.grey,
-              fontSize: 15,
-              textColor: Colors.white,
-              toastLength: Toast.LENGTH_LONG,
-            );
+            flutter_show_toast("포인트가 부족합니다");
             break;
         }
       }
-
     } else {
-      Fluttertoast.showToast(
-        msg: "Qr 인식 실패",
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.grey,
-        fontSize: 15,
-        textColor: Colors.white,
-        toastLength: Toast.LENGTH_LONG,
-      );
+      flutter_show_toast("Qr 인식 실패");
     }
   }
 
@@ -429,9 +411,6 @@ class _CameraWidgetState extends State<CameraWidget>
     String base64Image = base64Encode(imageBytes);
 
     await scanQr(base64Image);
-
-
-
 
     //로딩 끝내기
     setState(() {

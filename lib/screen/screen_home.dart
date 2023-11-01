@@ -14,7 +14,9 @@ import 'package:precycler/model/model_StoreData.dart';
 import "package:flutter/foundation.dart";
 import 'screen_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:precycler/widget/widget_custom.dart';
 
+//이름, 포인트 불러오기
 Future<UserData?> getPoint(UserData userData) async {
   final response = await http.post(
     Uri.parse('http://43.202.220.164:8000/point/'), // 실제 API 엔드포인트로 대체하세요
@@ -22,88 +24,98 @@ Future<UserData?> getPoint(UserData userData) async {
       'mid': userData.id,
     },
   );
+  //정상 응답일때
   if (response.statusCode == 200) {
-    // 요청이 성공한 경우
     final responseData = json.decode(response.body);
     List<String> r = responseData.toString().split('|');
     userData.point = int.parse(r[1]);
     userData.name = r[0];
-  } else {
-    Fluttertoast.showToast(
-      msg: "포인트 불러오기 실패",
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.grey,
-      fontSize: 15,
-      textColor: Colors.white,
-      toastLength: Toast.LENGTH_LONG,
-    );
+  }
+
+  //정상 응답이 아닐때
+  else {
+    flutter_show_toast("포인트 불러오기 실패");
   }
   return userData;
 }
 
 class HomeScreen extends StatefulWidget {
   UserData? userData;
-
-
-
   HomeScreen({super.key,this.userData});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  //위도
   double latitude = 0;
+  //경도
   double longitude = 0;
-  String address = '';
-
-  List<StoreData> mapdata = [];
-
+  //주소
   String myLocation = '';
 
+  //가져온 가게 데이터들 리스트
+  List<StoreData> mapdata = [];
 
+  @override
   void initState() {
+    //포인트와 이름 가져오기
     get();
+
+    //가게 정보와 현재 자신의 위치 가져오기
+    getLocationData();
   }
 
+  //포인트, 이름 가져오기 함수
   void get() async {
     widget.userData = await getPoint(widget.userData!);
   }
 
+  //가게 정보 가져오기
   Future<void> getMap(String lat, String log) async {
     final response = await http.post(
       Uri.parse('http://43.202.220.164:8000/map/'), // 실제 API 엔드포인트로 대체하세요
       body: {
+        //위도, 경도와 함께 요청 보내기
         'lat':lat,
         'log':log,
       },
     );
+    //정상적인 응답을 받았을 때
     if (response.statusCode == 200) {
-      // 요청이 성공한 경우
+      //응답 저장
       final responseData = json.decode(response.body);
-      mapdata = [];
+
+      //응답을 그 개수만큼 반복
       for(var a in responseData){
+        //이름과 주소가 뭉쳐있는 형태 저장
         var b = a['nl'];
+
+        //거리 int로 전환
         int c = a['dis'].toInt();
+
+        // '|'를 기준으로 앞쪽이 가게 이름, 뒤쪽이 가게 주소
         var e = (b.toString()).split('|');
-        StoreData s = StoreData(name: e[0], address: e[1], distance: c);
+
+        //만약 거리가 1000m 이상이면 단위를 km로 전환, 아니면 그대로 m 단위로 표시
+        var t = (c >= 1000)?((double.parse(((c/1000).toString())+((c%1000).toString())).toStringAsFixed(2)).toString())+" km":c.toString()+" m";
+
+        //이름, 주소, 거리를 가게 정보를 저장하는 리스트에 추가
+        StoreData s = StoreData(name: e[0], address: e[1], distance: t);
         mapdata.add(s);
       }
+    }
 
-
-    } else {
-      Fluttertoast.showToast(
-        msg: "가게 정보 불러오기 실패",
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.grey,
-        fontSize: 15,
-        textColor: Colors.white,
-        toastLength: Toast.LENGTH_LONG,
-      );
+    //정상적인 응답을 받지 못했을 때
+    else {
+      //가게 정보 불러오기 실패 표시
+      flutter_show_toast("가게 정보 불러오기 실패");
     }
   }
 
+  //현재 주소 가져오기
   Future<void> getPos(String lat, String log) async {
+    print(lat.toString() +" 1 "+log.toString());
     final response = await http.post(
       Uri.parse('http://43.202.220.164:8000/addr/'), // 실제 API 엔드포인트로 대체하세요
       body: {
@@ -114,11 +126,20 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       // 요청이 성공한 경우
       final responseData = json.decode(response.body);
-
       myLocation = responseData.toString();
-
-
     }
+  }
+
+  //위도 경도 가져오면서 주소와 가게 정보 가져오기
+  void getLocationData() async {
+    Location location = Location();
+    await location.getCurrentLocation();
+    longitude = location.longitude;
+    latitude = location.latitude;
+
+    getMap(latitude.toString(),longitude.toString());
+
+    getPos(latitude.toString(),longitude.toString());
   }
 
   @override
@@ -131,18 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
     //DraggableScrollableSheet의 최대, 최소 크기
     double maxheight = height*0.3;
     double minheight = height;
-
-    //위에서 정한 DraggableScrollableSheet의 크기에 따라서 서버로부터 data를 받아올지 말지 결정
-    bool getData = false;
-
-    void getLocationData() async {
-      Location location = Location();
-      await location.getCurrentLocation();
-      longitude = location.longitude;
-      latitude = location.latitude;
-    }
-
-
 
     //상태표지줄과 네비게이션 바와 겹치지 않는 안전한 영역을 반환
     return SafeArea(
@@ -176,31 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListView(
                       padding: EdgeInsets.fromLTRB(0, width*0.1, 0, 0),
                       children: [
-                        //포인트 이용 내역
-                        // ListTile(
-                        //   title: Text(
-                        //     '포인트 이용 내역',
-                        //     textAlign: TextAlign.center,
-                        //     style: TextStyle(
-                        //       fontSize: 20,
-                        //       color: Colors.white,
-                        //     ),
-                        //   ),
-                        //   onTap: (){
-                        //     Navigator.of(context).push(
-                        //       MaterialPageRoute(
-                        //         builder: (context) => PointHistoryDrawer(),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
                         //개인정보 변경
                         ListTile(
                           title: Text(
                             '개인정보 변경',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: width*0.05,
                               color: Colors.white,
                             ),
                           ),
@@ -212,13 +203,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         ),
+
                         //버그 문의
                         ListTile(
                           title: Text(
                             '버그 문의',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: width*0.05,
                               color: Colors.white,
                             ),
                           ),
@@ -230,13 +222,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         ),
+
                         //도움말
                         ListTile(
                           title: Text(
                             '도움말',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: width*0.05,
                               color: Colors.white,
                             ),
                           ),
@@ -248,13 +241,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         ),
+
                         //정책
                         ListTile(
                           title: Text(
                             '정책',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: width*0.05,
                               color: Colors.white,
                             ),
                           ),
@@ -270,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                 ),
 
-                //로그아웃, 회원탈퇴 부분
+                //로그아웃 부분
                 Padding(
                     padding: EdgeInsets.only(bottom: width*0.04),
                     child:Row(
@@ -278,7 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Flexible(
                             child: ListTile(
                               title: Text('로그아웃',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
+
+                              //로그아웃을 누르면
                               onTap: () async {
+                                //로그인 상태를 false로 나머지 사용자 정보를 다 초기화 시키기
                                 final SharedPreferences prefs = await SharedPreferences.getInstance();
                                 await prefs.setBool('loginState', false);
                                 await prefs.setString('UserData_id','');
@@ -294,14 +291,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             ),
                         ),
-                        Flexible(
-                          child: ListTile(
-                            title: Text('회원탈퇴',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
-                            onTap: (){
-
-                            },
-                          ),
-                        ),
                       ],
                     )
                 )
@@ -314,9 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               //가운데 부분에는 카메라 뷰어와 셔터버튼이 들어가야하므로 커스텀 위젯인 CameraWidget 호출
               Center(
-                child: CameraWidget(userData:widget.userData),
+                child: CameraWidget(userData:widget!.userData),
               ),
-
               //말그대로 드래그가 가능하고 스크롤도 가능한 시트이다
               DraggableScrollableSheet(
                 initialChildSize: 0.15,
@@ -332,24 +320,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     //sheetHeight의 변화에 따라 최대, 최소크기 지정
                     maxheight = (maxheight < sheetHeight)? sheetHeight : maxheight;
                     minheight = (minheight > sheetHeight)? sheetHeight : minheight;
-
-                    //현재 DraggableScrollableSheet가 하단에 내려진 상태인지에 따라서
-                    //서버로부터 정보를 가져올지 지정
-                    getData = (sheetHeight <= minheight)?false:true;
-
-                    //만약 정보를 가져온다면 위도 경도 가져오기
-                    if(getData){
-                      List<String> Adr = [];
-                      bool loop = true;
-
-                      getLocationData();
-
-                      getMap(latitude.toString(),longitude.toString());
-
-                      getPos(latitude.toString(),longitude.toString());
-
-                    }
-
                     //리스트뷰 반환
                     return ListView(
                       controller: scrollController,
@@ -382,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                   '현재위치 : ${myLocation}',
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: width*0.05,
                                     color: Colors.white
                                   ),
                                 ),
@@ -392,6 +362,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: ListView.builder(
                                   controller: scrollController,
+
+                                  //불러온 가게 개수만큰 리스트 뷰 생성
                                   itemCount: mapdata.length,
                                   itemBuilder: (context, index) {
                                     StoreData s = mapdata[index];
@@ -419,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       width: width*0.45,
                                                       child: Text('${s.name}',
                                                         style: TextStyle(
-                                                            fontSize: 19,
+                                                            fontSize: width*0.045,
                                                             color: Colors.white
                                                         ),
                                                       ),
@@ -428,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       width: width*0.45,
                                                       child: Text('${s.address}',
                                                         style: TextStyle(
-                                                            fontSize: 14,
+                                                            fontSize: width*0.03,
                                                             color: Colors.white
                                                         ),
                                                       ),
@@ -438,9 +410,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                               Expanded(
-                                                child: Text('${(double.parse(((s.distance/1000).toString())+((s.distance%1000).toString())).toStringAsFixed(2)).toString()+" km"}',
+                                                child: Text('${s.distance}',
                                                   style: TextStyle(
-                                                      fontSize: 20,
+                                                      fontSize: width*0.05,
                                                       color: Colors.white
                                                   ),
                                                   textAlign: TextAlign.start,
@@ -468,14 +440,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
+//위도 경도 구할때 필요한 클래스
 class Location {
   double latitude = 0;
   double longitude = 0;
 
   Future<void> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    // print(permission);
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }

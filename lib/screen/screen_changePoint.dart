@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'screen_ad.dart';
+import 'package:precycler/model/model_UserData.dart';
 
 class ChangePointScreen extends StatefulWidget {
   //변경할 포인트가 증가인지 감소인지 판별할 변수
   String IncDec = "";
 
+  //변경한 포인트
   int ChangePoint = 0;
 
-  ChangePointScreen({required this.IncDec,required this.ChangePoint});
+  //사용자 데이터
+  UserData? userData;
+
+  ChangePointScreen({required this.IncDec,required this.ChangePoint, this.userData});
 
   @override
   State<ChangePointScreen> createState() => _ChangePointScreenState();
@@ -21,10 +26,10 @@ class _ChangePointScreenState extends State<ChangePointScreen> {
   void initState() {
     super.initState();
 
-    // 3초 후에 페이지를 pop합니다.
+    // 3초 후에 광고페이지로 전환
     Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pop();
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>AdScreen()));
+      Navigator.push(context,MaterialPageRoute(builder: (context)=>AdScreen(userData: widget.userData,)));
     });
   }
 

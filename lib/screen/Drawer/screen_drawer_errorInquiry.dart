@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/model/model_UserData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:precycler/widget/widget_custom.dart';
 
 class ErrorInquiryDrawer extends StatefulWidget {
   UserData? userData;
@@ -29,14 +30,7 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
       // 요청이 성공한 경우
       final responseData = json.decode(response.body);
       if(responseData == 'ok'){
-        Fluttertoast.showToast(
-          msg: "문의가 정상적으로 진행되었습니다",
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.grey,
-          fontSize: 15,
-          textColor: Colors.white,
-          toastLength: Toast.LENGTH_LONG,
-        );
+        flutter_show_toast("문의가 정상적으로 진행되었습니다");
       }
       else{
         Fluttertoast.showToast(

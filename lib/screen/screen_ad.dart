@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'screen_home.dart';
-
+import 'package:precycler/model/model_UserData.dart';
 
 class AdScreen extends StatefulWidget {
-  const AdScreen({super.key});
+  UserData? userData;
+
+  AdScreen({super.key,this.userData});
 
   @override
   State<AdScreen> createState() => _AdScreenState();
@@ -19,7 +21,7 @@ class _AdScreenState extends State<AdScreen> {
     // 3초 후에 페이지를 pop합니다.
     Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pop();
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreen()));
+      Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreen(userData: widget.userData,)));
     });
   }
 
@@ -38,7 +40,8 @@ class _AdScreenState extends State<AdScreen> {
             '광고 표시화면',
             style: TextStyle(
               fontSize: width*0.1,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
         ),

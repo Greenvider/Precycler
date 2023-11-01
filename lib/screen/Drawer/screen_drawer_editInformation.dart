@@ -5,6 +5,7 @@ import 'package:precycler/model/model_UserData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:precycler/widget/widget_custom.dart';
 
 class EditInformationDrawer extends StatefulWidget {
   UserData? userData;
@@ -34,28 +35,27 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
   //비밀번호확인 표시의 현재 아이콘
   IconData _showPwdCurrenIcon = Icons.remove_red_eye;
 
+  //기존 정보를 띄워놓기 위한 컨트롤러
   TextEditingController controller_n = TextEditingController();
   TextEditingController controller_p = TextEditingController();
 
   void initState(){
+    //입력 박스의 text를 미리 지정
     controller_n.text = widget.userData!.name.toString();
     controller_p.text = widget.userData!.password.toString();
 
-
+    //이름과 비번도 지정
     name = widget.userData!.name.toString();
     password = widget.userData!.password.toString();
 
   }
 
   Future<void> getchange() async {
-    print("--------------------------------"+widget.userData!.point.toString());
-    print("--------------------------------"+widget.userData!.id.toString());
-    print("--------------------------------"+name.toString());
-    print("--------------------------------"+password.toString());
-
+    //포인트와 아이디 가져와서 저장
     String point = widget.userData!.point.toString();
     String id = widget.userData!.id.toString();
 
+    //요청하면서 id, name, password, point 보냄
     final response = await http.put(
       Uri.parse('http://43.202.220.164:8000/change/'), // 실제 API 엔드포인트로 대체 하세요
       body: {
@@ -72,14 +72,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
       if(responseData=='ok'){
         widget.userData!.name = name;
         widget.userData!.password = password;
-        Fluttertoast.showToast(
-          msg: "변경 성공",
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.grey,
-          fontSize: 15,
-          textColor: Colors.white,
-          toastLength: Toast.LENGTH_LONG,
-        );
+        flutter_show_toast("변경 성공");
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('loginState', false);
@@ -105,25 +98,11 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
         );
       }
       else{
-        Fluttertoast.showToast(
-          msg: "정보 변경 실패 2",
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.grey,
-          fontSize: 15,
-          textColor: Colors.white,
-          toastLength: Toast.LENGTH_LONG,
-        );
+        flutter_show_toast("정보 변경 실패 2");
       }
 
     }else{
-      Fluttertoast.showToast(
-        msg: "정보 변경 실패",
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.grey,
-        fontSize: 15,
-        textColor: Colors.white,
-        toastLength: Toast.LENGTH_LONG,
-      );
+      flutter_show_toast("정보 변경 실패 1");
     }
   }
 
@@ -378,14 +357,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                           //버튼 입력시 실행 정보
                           onPressed: () async {
                             if(password != _password){
-                              Fluttertoast.showToast(
-                                msg: "비밀번호확인이 일치하지 않습니다",
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.grey,
-                                fontSize: 15,
-                                textColor: Colors.white,
-                                toastLength: Toast.LENGTH_LONG,
-                              );
+                              flutter_show_toast("비밀번호 확인이 일치하지 않습니다");
                             }
                             else{
                               //회원가입 로직 동작
@@ -503,14 +475,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                               });
                             }
                             else{
-                              Fluttertoast.showToast(
-                                msg: "비밀번호가 일치하지 않습니다",
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.grey,
-                                fontSize: 15,
-                                textColor: Colors.white,
-                                toastLength: Toast.LENGTH_LONG,
-                              );
+                              flutter_show_toast("비밀번호가 일치하지 않습니다");
                             }
                           },
 
