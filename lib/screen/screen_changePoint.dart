@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'screen_ad.dart';
 
 class ChangePointScreen extends StatefulWidget {
   //변경할 포인트가 증가인지 감소인지 판별할 변수
@@ -23,6 +24,7 @@ class _ChangePointScreenState extends State<ChangePointScreen> {
     // 3초 후에 페이지를 pop합니다.
     Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pop();
+      Navigator.push(context,MaterialPageRoute(builder: (context)=>AdScreen()));
     });
   }
 

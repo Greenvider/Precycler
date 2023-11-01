@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/screen/screen_home.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CameraWidget extends StatefulWidget {
   UserData? userData;
@@ -154,7 +155,7 @@ class _CameraWidgetState extends State<CameraWidget>
             Fluttertoast.showToast(
               msg: "이미지를 제대로 촬영해주세요",
               gravity: ToastGravity.CENTER,
-              backgroundColor: Colors.grey,
+              backgroundColor: Colors.black,
               fontSize: 15,
               textColor: Colors.white,
               toastLength: Toast.LENGTH_LONG,

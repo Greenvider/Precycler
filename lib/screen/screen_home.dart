@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:precycler/widget/widget_camera_f.dart';
+import 'package:precycler/widget/widget_camera.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_pointHistory.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_editInformation.dart';
 import 'package:precycler/screen/Drawer/screen_drawer_errorInquiry.dart';
@@ -12,6 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/model/model_UserData.dart';
 import 'package:precycler/model/model_StoreData.dart';
 import "package:flutter/foundation.dart";
+import 'screen_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<UserData?> getPoint(UserData userData) async {
   final response = await http.post(
@@ -276,8 +278,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         Flexible(
                             child: ListTile(
                               title: Text('로그아웃',textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
-                              onTap: (){
+                              onTap: () async {
+                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setBool('loginState', false);
+                                await prefs.setString('UserData_id','');
+                                await prefs.setString('UserData_password','');
 
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ),
+                                );
                               },
                             ),
                         ),

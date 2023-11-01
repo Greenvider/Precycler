@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/model/model_UserData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditInformationDrawer extends StatefulWidget {
   UserData? userData;
@@ -28,10 +29,10 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
   bool canChange = false;
 
   //비밀번호표시의 현재 아이콘
-  IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData showPwdCurrenIcon = Icons.remove_red_eye;
 
   //비밀번호확인 표시의 현재 아이콘
-  IconData _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData _showPwdCurrenIcon = Icons.remove_red_eye;
 
   TextEditingController controller_n = TextEditingController();
   TextEditingController controller_p = TextEditingController();
@@ -80,12 +81,18 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
           toastLength: Toast.LENGTH_LONG,
         );
 
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('loginState', false);
+        await prefs.setString('UserData_id','');
+        await prefs.setString('UserData_password','');
 
-        //현재 페이지 종료
         Navigator.pop(context);
-
-        //홈 페이지로 전환
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
+        Navigator.pop(context);
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
       }
       else if (responseData=="rpas"){
         Fluttertoast.showToast(
@@ -370,8 +377,20 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         child: ElevatedButton(
                           //버튼 입력시 실행 정보
                           onPressed: () async {
-                            //로그인 로직 동작
-                            await getchange();
+                            if(password != _password){
+                              Fluttertoast.showToast(
+                                msg: "비밀번호확인이 일치하지 않습니다",
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.grey,
+                                fontSize: 15,
+                                textColor: Colors.white,
+                                toastLength: Toast.LENGTH_LONG,
+                              );
+                            }
+                            else{
+                              //회원가입 로직 동작
+                              await getchange();
+                            }
                           },
 
                           //버튼 스타일
@@ -477,6 +496,7 @@ class _EditInformationDrawerState extends State<EditInformationDrawer> {
                         child: ElevatedButton(
                           //버튼 입력시 실행 정보
                           onPressed: () {
+                            showPwdCurrenIcon = Icons.remove_red_eye;
                             if(_password == widget.userData!.password){
                               setState(() {
                                 canChange = true;

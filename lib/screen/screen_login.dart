@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/model/model_UserData.dart';
 import 'package:precycler/request/request_django.dart';
 import 'package:precycler/widget/widget_custom.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,7 +24,19 @@ class _LoginScreenState extends State<LoginScreen> {
   UserData userData = UserData();
 
   //비밀번호표시의 현재 아이콘
-  IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData showPwdCurrenIcon = Icons.remove_red_eye;
+
+  Future<void> i() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final String? user_data_id = prefs.getString('UserData_id');
+    final String? user_data_password = prefs.getString('UserData_password');
+
+    setState(() {
+      if((user_data_id != null)&&(user_data_password != null))
+        userData = UserData(id: user_data_id, password: user_data_password);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       //버튼 입력시 실행 정보
                         onPressed: () async {
+
                           //로그인 로직 동작
                           await login(context,id,password,userData);
                         },
@@ -215,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.fromLTRB(0, 0, 0, height*0.27),
                   child: TextButton(
                     onPressed: (){
+
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => RegisterScreen())
                       );

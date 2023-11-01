@@ -111,7 +111,8 @@ class _ErrorInquiryDrawerState extends State<ErrorInquiryDrawer> {
                     });
                   },
                   maxLength: 500,
-
+                  style: TextStyle(color:Colors.white),
+                  cursorColor: Colors.white,
                   //꾸미기
                   decoration: InputDecoration(
                       hintText: '문의 내용을 설명해주세요',

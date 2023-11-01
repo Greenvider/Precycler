@@ -48,6 +48,12 @@ dependencies:
   geolocator:
   geocoding:
   http:
+  shared_preferences:
+  flutter_launcher_icons:
+
+flutter_launcher_icons:
+  android: "launcher_icons"
+  image_path: assets/precycler_icon.png
 
 dev_dependencies:
   flutter_test:

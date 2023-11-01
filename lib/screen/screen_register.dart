@@ -4,6 +4,7 @@ import 'screen_login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:precycler/widget/widget_loginOrHome.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -23,10 +24,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String _password;
 
   //비밀번호표시의 현재 아이콘
-  IconData showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData showPwdCurrenIcon = Icons.remove_red_eye;
 
   //재입력 비밀번호표시의 현재 아이콘
-  IconData _showPwdCurrenIcon = Icons.remove_red_eye_outlined;
+  IconData _showPwdCurrenIcon = Icons.remove_red_eye;
 
   Future<void> register() async {
     final response = await http.post(
@@ -44,15 +45,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print("responseData : "+responseData);
       switch(responseData){
         case 'ok':
+          Fluttertoast.showToast(
+            msg: "회원가입 성공",
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.grey,
+            fontSize: 15,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_LONG,
+          );
           //현재 페이지 종료
           Navigator.pop(context);
 
           //로그인 페이지로 전환
-          Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
+          Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginOrHome()));
           break;
         case 'rpas':
           Fluttertoast.showToast(
-            msg: "비밀번 양식이 올바르지 않습니다",
+            msg: "비밀번호 양식이 올바르지 않습니다",
             gravity: ToastGravity.CENTER,
             backgroundColor: Colors.grey,
             fontSize: 15,
@@ -373,8 +382,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: ElevatedButton(
                       //버튼 입력시 실행 정보
                         onPressed: () async {
-                          //회원가입 로직 동작
-                          await register();
+                          if(password != _password){
+                            Fluttertoast.showToast(
+                              msg: "비밀번호확인이 일치하지 않습니다",
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.grey,
+                              fontSize: 15,
+                              textColor: Colors.white,
+                              toastLength: Toast.LENGTH_LONG,
+                            );
+                          }
+                          else{
+                            //회원가입 로직 동작
+                            await register();
+                          }
                         },
 
                         //버튼 스타일

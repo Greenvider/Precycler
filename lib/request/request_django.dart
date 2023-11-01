@@ -4,10 +4,11 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:precycler/model/model_UserData.dart';
 import 'package:precycler/screen/screen_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
-Future<void> login(BuildContext context, String id, String password, UserData userData) async {
+Future<void> login(BuildContext context, String id, String password, UserData? userData) async {
   final response = await http.post(
     Uri.parse('http://43.202.220.164:8000/login/'), // 실제 API 엔드포인트로 대체하세요
     body: {
@@ -21,8 +22,15 @@ Future<void> login(BuildContext context, String id, String password, UserData us
     print("responseData : "+responseData);
     switch(responseData){
       case 'match':
-        userData.id = id;
+        userData!.id = id;
         userData.password = password;
+
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('loginState', true);
+
+        await prefs.setString('UserData_id',id);
+        await prefs.setString('UserData_password',password);
+
 
         //현재 페이지 종료
         Navigator.pop(context);
